@@ -12,12 +12,12 @@ struct DownsampleGridView: View {
             Text("AsyncDownSamplingImage")
             ScrollView {
                 LazyVGrid(columns: [.init(), .init()]) {
-                    ForEach(0..<1000, id: \.self) { _ in
+                    ForEach(0..<1000, id: \.self) { i in
                         Button {
                             showsDetail.toggle()
                         } label: {
                             AsyncDownSamplingImage(
-                                url: url,
+                                url: url?.appending(queryItems: [URLQueryItem(name: "cache", value: "\(i)")]),
                                 downsampleSize: .height(height)
                             ) { image in
                                 image.resizable()

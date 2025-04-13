@@ -11,6 +11,10 @@ public struct DownSampling {
         at url: URL,
         size: DownSamplingSize
     ) async throws -> CGImage {
+        let cacheKey = ImageCacheKey(url: url, size: size)
+        if let image = TemporaryImageCache.shared[cacheKey] {
+            return image
+        }
         let imageSourceOption = [kCGImageSourceShouldCache: true] as CFDictionary
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, imageSourceOption) else {
             throw Error.failedToFetchImage
@@ -31,6 +35,7 @@ public struct DownSampling {
         ) else {
             throw Error.failedToDownsample
         }
+        TemporaryImageCache.shared[cacheKey] = downsampledImage
         return downsampledImage
     }
 }
